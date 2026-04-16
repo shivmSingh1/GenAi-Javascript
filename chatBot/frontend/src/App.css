@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  height: 100%;
+}
+
+.overflow-y-auto {
+  overflow-y: auto !important;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.form-control:focus {
+  border-color: #10a37f !important;
+  box-shadow: 0 0 0 0.2rem rgba(16, 163, 127, 0.25) !important;
+}
+
+.textarea-expand {
+  resize: vertical;
+  max-height: 150px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rounded-4 {
+    border-radius: 0.75rem !important;
+  }
+
+  .p-md-4 {
+    padding: 1rem !important;
+  }
+}
