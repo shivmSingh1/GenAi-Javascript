@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from "axios"
-export const serverUrl = "http://localhost:5000"
+export const serverUrl = "https://chatease-gbfi.onrender.com"
 import { v4 as uuidv4 } from "uuid"
 import { MdDarkMode, MdLightMode, MdSend } from 'react-icons/md'
 
