@@ -7,7 +7,7 @@ const getHistory = require('./services/getHistory');
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
-genrateResponse = async (userMessage = "HI", sessionId) => {
+genrateResponse = async (userMessage, sessionId) => {
 
 	const messages = [
 		{
@@ -44,18 +44,19 @@ genrateResponse = async (userMessage = "HI", sessionId) => {
             
             `
 		},
-		{
-			"role": "user",
-			"content": `${userMessage}`
-		}
 	]
-	console.log("messages", messages)
+	// console.log("messages", messages)
 	const history = await getHistory(sessionId);
-	console.log("history", history?.messages)
+	// console.log("history", history?.messages)
 	if (history) {
 		// console.log("pushed")
-		messages.push(...history.messages)
+		messages.push(...history.slice(-10))
 	}
+
+	messages.push({
+		role: "user",
+		content: userMessage
+	});
 
 	// console.log(messages)
 
@@ -72,7 +73,7 @@ genrateResponse = async (userMessage = "HI", sessionId) => {
 		const chatCompletion = await groq.chat.completions.create({
 			"messages": messages,
 			"model": "openai/gpt-oss-120b",
-			"temperature": 1,
+			"temperature": 0.7,
 			"tools": [
 				{
 					"type": "function",
@@ -95,11 +96,27 @@ genrateResponse = async (userMessage = "HI", sessionId) => {
 			],
 		}
 		);
-		messages.push(chatCompletion.choices[0]?.message)
+		// messages.push(chatCompletion.choices[0]?.message)
+
+		const aiMessage = chatCompletion.choices[0]?.message;
+
+		if (aiMessage) {
+			if (aiMessage.content) {
+				messages.push({
+					role: "assistant",
+					content: aiMessage.content
+				});
+			}
+		}
 
 		const toolcalls = chatCompletion.choices[0]?.message.tool_calls
 		if (!toolcalls) {
-			const history = await saveHistory(messages, sessionId)
+			// const history = await saveHistory(messages, sessionId)
+			await saveHistory([
+				{ role: "user", content: userMessage },
+				{ role: "assistant", content: aiMessage.content }
+			], sessionId);
+
 			return chatCompletion.choices[0]?.message?.content
 		}
 

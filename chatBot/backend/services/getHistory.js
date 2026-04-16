@@ -2,11 +2,11 @@ const MessageHistory = require("../models/messageHistory.model")
 
 const getHistory = async (sessionId) => {
 	try {
-		const history = await MessageHistory.findOne({ sessionId }).select("messages.role messages.content messages.tool_call_id messages.name");
+		const history = await MessageHistory.findOne({ sessionId }).select("messages.role messages.content").lean();
 		if (!history || history.messages.length <= 0) {
 			return null
 		}
-		return history
+		return history.messages
 	} catch (error) {
 		console.log("something went wrong while getting the message history.", error.message)
 	}
