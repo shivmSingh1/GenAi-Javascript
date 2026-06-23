@@ -2,11 +2,22 @@
   "name": "reactagent_langgraph",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@langchain/core": "^1.2.1",
+    "@langchain/groq": "^1.3.1",
+    "@langchain/langgraph": "^1.4.5",
+    "@langchain/tavily": "^1.2.0",
+    "dotenv": "^17.4.2",
+    "install": "^0.13.0",
+    "langchain": "^1.5.1",
+    "npm": "^11.17.0"
+  }
 }
