@@ -7,6 +7,7 @@ import * as z from "zod";
 import dotenv from "dotenv"
 dotenv.config({})
 import { writeFileSync } from "fs";
+import readline from "node:readline/promises"
 
 
 //------------ tools --------------
@@ -76,10 +77,9 @@ const compiledGraph = graph.compile()
 
 const main = async () => {
 
+	//image genration
 	const drawableGraph = await compiledGraph.getGraphAsync();
-
 	const image = await drawableGraph.drawMermaidPng();
-
 	writeFileSync(
 		"graph.png",
 		Buffer.from(await image.arrayBuffer())
@@ -87,19 +87,30 @@ const main = async () => {
 
 	console.log("Graph image saved!");
 
-	const result = await compiledGraph.invoke(
-		{
-			messages: [
-				{
-					role: "human",
-					content: "current weather in lucknow?"
-				}
-			]
-		}
-	)
-	const lastMessage = result.messages.at(-1);
+	//-------------- taking user input --------------
 
-	console.log(lastMessage.content);
+	const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+
+	while (true) {
+		const userInput = await rl.question("You: ")
+		if (userInput === "bye") {
+			break;
+		}
+
+		const result = await compiledGraph.invoke(
+			{
+				messages: [
+					{
+						role: "human",
+						content: userInput
+					}
+				]
+			}
+		)
+		const lastMessage = result.messages.at(-1);
+		console.log(lastMessage.content);
+	}
+	rl.close()
 }
 
 main()
