@@ -8,7 +8,11 @@ import dotenv from "dotenv"
 dotenv.config({})
 import { writeFileSync } from "fs";
 import readline from "node:readline/promises"
+import { MemorySaver } from "@langchain/langgraph";
 
+//------------save short term memory--------------
+const checkpointer = new MemorySaver();
+const threadConfig = { configurable: { thread_id: "1" } };
 
 //------------ tools --------------
 
@@ -73,7 +77,7 @@ const graph = new StateGraph(MessagesAnnotation)
 		}
 	);
 
-const compiledGraph = graph.compile()
+const compiledGraph = graph.compile({ checkpointer: checkpointer })
 
 const main = async () => {
 
@@ -105,7 +109,8 @@ const main = async () => {
 						content: userInput
 					}
 				]
-			}
+			},
+			threadConfig
 		)
 		const lastMessage = result.messages.at(-1);
 		console.log(lastMessage.content);
